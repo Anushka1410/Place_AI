@@ -1,0 +1,14 @@
+
+--- New PlaceAI Report ---
+Python: Your score = 78/100, Target = 80/100, Gap = 2
+SQL: Your score = 69/100, Target = 70/100, Gap = 1
+Problem Solving: Your score = 90/100, Target = 75/100, Gap = 0
+Git: Your score = 87/100, Target = 60/100, Gap = 0
+Overall average: 81.0/100
+
+--- New PlaceAI Report ---
+Python: Your score = 78/100, Target = 80/100, Gap = 2
+SQL: Your score = 60/100, Target = 70/100, Gap = 10
+Problem Solving: Your score = 98/100, Target = 75/100, Gap = 0
+Git: Your score = 86/100, Target = 60/100, Gap = 0
+Overall average: 80.5/100
