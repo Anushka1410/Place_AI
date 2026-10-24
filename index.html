@@ -5,1099 +5,843 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlaceAI | AI Placement Preparation</title>
 <style>
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
+
 :root {
---primary: #5145cd;
---primary-dark: #3930a8;
---secondary: #118779;
---background: #f4f5fb;
---surface: #ffffff;
---text: #22243a;
---muted: #666b80;
---border: #e3e5f0;
---success: #16834a;
---danger: #c0392b;
+  --primary: #5145cd;
+  --primary-dark: #3930a8;
+  --secondary: #118779;
+  --secondary-dark: #0d6d62;
+  --background: #f4f5fb;
+  --surface: #fff;
+  --soft: #f9f9ff;
+  --text: #22243a;
+  --muted: #666b80;
+  --border: #e3e5f0;
+  --success: #16834a;
+  --danger: #c0392b;
+  --warning: #b9770e;
 }
+
 body {
-margin: 0;
-font-family: Arial, Helvetica, sans-serif;
-background: var(--background);
-color: var(--text);
-line-height: 1.65;
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.65;
 }
+
 header {
-background: linear-gradient(135deg, #3930a8, #7770e8);
-color: white;
-padding: 42px 20px;
-text-align: center;
+  background: linear-gradient(135deg, #3930a8, #7770e8);
+  color: #fff;
+  padding: 42px 20px;
+  text-align: center;
 }
 header h1 { margin: 0; font-size: 2.5rem; }
+
 nav {
-display: flex;
-justify-content: center;
-flex-wrap: wrap;
-gap: 10px;
-padding: 14px;
-background: white;
-border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
 }
 nav a {
-color: var(--primary);
-text-decoration: none;
-font-weight: bold;
-padding: 7px 10px;
-border-radius: 7px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 7px 10px;
+  border-radius: 7px;
 }
 nav a:hover { background: #eeedff; }
-main {
-max-width: 1050px;
-margin: 30px auto;
-padding: 0 18px;
-}
+
+main, .dashboard-wrap { max-width: 1050px; margin: 30px auto; padding: 0 18px; }
+.dashboard-wrap { margin-bottom: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+
 .card {
-background: var(--surface);
-padding: 25px;
-margin-bottom: 25px;
-border: 1px solid var(--border);
-border-radius: 15px;
-box-shadow: 0 5px 20px rgba(35, 38, 80, 0.05);
+  background: var(--surface);
+  padding: 25px;
+  margin-bottom: 25px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(35, 38, 80, .05);
 }
+
 h2 { color: var(--primary); margin-top: 0; }
 h3 { color: #34365d; }
 label { font-weight: 600; }
+
 input[type="range"] { width: 100%; accent-color: var(--primary); }
 input[type="file"], select, textarea {
-width: 100%;
-padding: 12px;
-margin-top: 8px;
-border: 1px solid #cfd2e3;
-border-radius: 8px;
-background: white;
-color: var(--text);
-font: inherit;
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #cfd2e3;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
 }
 textarea { resize: vertical; }
+:focus-visible { outline: 3px solid #a9a3f5; outline-offset: 2px; }
+
 button {
-background: var(--primary);
-color: white;
-padding: 12px 18px;
-margin-top: 15px;
-border: none;
-border-radius: 8px;
-font: inherit;
-font-weight: bold;
-cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 18px;
+  margin-top: 15px;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
 }
 button:hover { background: var(--primary-dark); }
-button:disabled {
-opacity: 0.65;
-cursor: wait;
-}
+button:disabled { opacity: .65; cursor: wait; }
 .secondary-button { background: var(--secondary); }
-.secondary-button:hover { background: #0d6d62; }
+.secondary-button:hover { background: var(--secondary-dark); }
+
 .skill-control { margin: 20px 0; }
 .skill-label {
-display: flex;
-justify-content: space-between;
-gap: 12px;
-margin-bottom: 8px;
-font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-weight: bold;
 }
+
 .result-box {
-margin-top: 20px;
-padding: 18px;
-background: #f9f9ff;
-border: 1px solid var(--border);
-border-radius: 10px;
-overflow-wrap: anywhere;
+  margin-top: 20px;
+  padding: 18px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
 }
 .hidden { display: none !important; }
+
 .skill-chip {
-display: inline-block;
-padding: 6px 12px;
-margin: 5px 5px 5px 0;
-border-radius: 20px;
-background: #e9e7ff;
-color: #3e32a9;
-font-size: 0.92rem;
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 5px 5px 5px 0;
+  border-radius: 20px;
+  background: #e9e7ff;
+  color: #3e32a9;
+  font-size: .92rem;
 }
+
 .roadmap-week {
-margin: 16px 0;
-padding: 17px;
-border: 1px solid var(--border);
-border-left: 5px solid var(--primary);
-border-radius: 9px;
-background: white;
+  margin: 16px 0;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--primary);
+  border-radius: 9px;
+  background: #fff;
 }
-.roadmap-week h4 {
-margin-top: 0;
-color: var(--primary);
-}
+.roadmap-week h4 { margin-top: 0; color: var(--primary); }
+
 .status { margin-top: 12px; overflow-wrap: anywhere; }
 .success { color: var(--success); }
 .error { color: var(--danger); }
-.priority-HIGH { color: #c0392b; font-weight: bold; }
-.priority-MEDIUM { color: #b9770e; font-weight: bold; }
+
+.priority-HIGH { color: var(--danger); font-weight: bold; }
+.priority-MEDIUM { color: var(--warning); font-weight: bold; }
 .priority-LOW { color: var(--secondary); font-weight: bold; }
-.progress-track {
-height: 12px;
-background: #e6e6f2;
-border-radius: 20px;
-overflow: hidden;
+
+.progress-track { height: 12px; background: #e6e6f2; border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0; background: var(--primary); transition: width .4s ease; }
+
+.question-number { color: var(--primary); font-weight: bold; }
+.feedback-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.report-grid, .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
 }
-.progress-fill {
-height: 100%;
-background: var(--primary);
-transition: width 0.4s ease;
+.dashboard-grid { margin: 20px 0; }
+.report-stat, .dashboard-card, .job-card {
+  min-width: 0;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
-.question-number {
-display: inline-block;
-color: var(--primary);
-font-weight: bold;
-}
-.feedback-text {
-white-space: pre-wrap;
-overflow-wrap: anywhere;
-}
-.report-score {
-font-size: 2rem;
-font-weight: bold;
-color: var(--primary);
-}
-.report-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-gap: 12px;
-}
-.report-stat {
-background: white;
-border: 1px solid var(--border);
-border-radius: 10px;
-padding: 15px;
-}
-.job-card {
-background: white;
-border: 1px solid var(--border);
-border-radius: 10px;
-padding: 18px;
-margin-top: 15px;
-}
-.job-card a {
-color: var(--primary);
-font-weight: bold;
-}
-footer {
-text-align: center;
-padding: 25px;
-color: var(--muted);
-}
+.dashboard-card { background: #fbfbff; }
+.dashboard-card h3 { margin: 0 0 8px; font-size: 1rem; }
+.dashboard-number { margin: 0; color: var(--primary); font-size: 1.8rem; font-weight: 700; overflow-wrap: anywhere; }
+.dashboard-caption { margin: 3px 0 0; color: var(--muted); font-size: .9rem; }
+.dashboard-intro { margin-top: -8px; color: var(--muted); }
+.dashboard-skill { margin: 14px 0; }
+.dashboard-skill-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.dashboard .progress-track { height: 9px; }
+
+.job-card { margin-top: 15px; }
+.job-card a { color: var(--primary); font-weight: bold; }
+
+footer { text-align: center; padding: 25px; color: var(--muted); }
+
 @media (max-width: 600px) {
-header h1 { font-size: 2rem; }
-.card { padding: 18px; }
-nav { gap: 4px; }
+  header h1 { font-size: 2rem; }
+  .card { padding: 18px; }
+  nav { gap: 4px; position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-fill { transition: none; }
+}
+/* Print only the interview report */
+@media print {
+  body > *:not(main), main > .card:not(#mock-interview), #mock-interview > :not(#interviewReport),
+  #interviewReport button { display: none !important; }
+  #interviewReport { border: 0; }
 }
 </style>
 </head>
 <body>
 
 <header>
-<h1>🚀 PlaceAI</h1>
-<p>Your AI-powered placement preparation companion</p>
+  <h1>🚀 PlaceAI</h1>
+  <p>Your AI-powered placement preparation companion</p>
 </header>
 
 <nav>
-<a href="#skill-assessment">Skill Assessment</a>
-<a href="#resume-analyzer">Resume Analyzer</a>
-<a href="#placement-roadmap">Learning Roadmap</a>
-<a href="#mock-interview">AI Mock Interview</a>
-<a href="#job-recommendations">Job Recommendations</a>
+  <a href="#placement-dashboard">Dashboard</a>
+  <a href="#skill-assessment">Skill Assessment</a>
+  <a href="#resume-analyzer">Resume Analyzer</a>
+  <a href="#placement-roadmap">Learning Roadmap</a>
+  <a href="#mock-interview">AI Mock Interview</a>
+  <a href="#job-recommendations">Job Recommendations</a>
 </nav>
+
+<!-- DASHBOARD -->
+<div class="dashboard-wrap">
+  <section class="card dashboard" id="placement-dashboard" aria-labelledby="dashboard-title">
+    <h2 id="dashboard-title">🎯 Your Placement Dashboard</h2>
+    <p class="dashboard-intro">A quick snapshot of your skills and placement preparation.</p>
+
+    <div class="dashboard-grid">
+      <article class="dashboard-card">
+        <h3>Placement Readiness</h3>
+        <p class="dashboard-number" id="readinessScore">--%</p>
+        <p class="dashboard-caption">Average of your four self-assessed skills</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Skills Assessed</h3>
+        <p class="dashboard-number" id="skillsAssessed">0/4</p>
+        <p class="dashboard-caption">Updates after a successful assessment</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Biggest Skill Gap</h3>
+        <p class="dashboard-number" id="topSkillGap">--</p>
+        <p class="dashboard-caption" id="topSkillGapDetail">Complete the skill assessment first.</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Target Roles</h3>
+        <p class="dashboard-number">3</p>
+        <p class="dashboard-caption">AI/ML Engineer · Python Developer · Data Analyst</p>
+      </article>
+    </div>
+
+    <div class="dashboard-card">
+      <h3>📈 Your Skill Progress</h3>
+      <p class="dashboard-caption">Your slider scores are shown here after you submit the assessment.</p>
+      <div id="dashboardSkillProgress"><p>Submit your skill assessment to see your progress.</p></div>
+    </div>
+  </section>
+</div>
 
 <main>
 
 <!-- FEATURE 1: SKILL ASSESSMENT -->
 <section class="card" id="skill-assessment">
-<h2>📊 Skill Assessment</h2>
-<p>Rate your skills from 0 to 100 and assess your current level.</p>
-
-<form id="skillForm">
-<div class="skill-control">
-<div class="skill-label">
-<label for="python">Python</label>
-<span id="pythonValue">50</span>
-</div>
-<input id="python" type="range" min="0" max="100" value="50">
-</div>
-
-<div class="skill-control">
-<div class="skill-label">
-<label for="sql">SQL</label>
-<span id="sqlValue">50</span>
-</div>
-<input id="sql" type="range" min="0" max="100" value="50">
-</div>
-
-<div class="skill-control">
-<div class="skill-label">
-<label for="problem_solving">Problem Solving</label>
-<span id="problem_solvingValue">50</span>
-</div>
-<input id="problem_solving" type="range" min="0" max="100" value="50">
-</div>
-
-<div class="skill-control">
-<div class="skill-label">
-<label for="git">Git</label>
-<span id="gitValue">50</span>
-</div>
-<input id="git" type="range" min="0" max="100" value="50">
-</div>
-
-<button type="submit">Analyze My Skills</button>
-</form>
-
-<p id="assessmentStatus" class="status" role="status"></p>
-
-<div id="assessmentResults" class="result-box hidden">
-<h3>Assessment Results</h3>
-<p id="assessmentAverage"></p>
-<div id="assessmentSkillResults"></div>
-<p id="assessmentMessage"></p>
-</div>
+  <h2>📊 Skill Assessment</h2>
+  <p>Rate your skills from 0 to 100 and assess your current level.</p>
+  <form id="skillForm">
+    <div id="skillSliders"></div>
+    <button type="submit">Analyze My Skills</button>
+  </form>
+  <p id="assessmentStatus" class="status" role="status"></p>
+  <div id="assessmentResults" class="result-box hidden">
+    <h3>Assessment Results</h3>
+    <p id="assessmentAverage"></p>
+    <div id="assessmentSkillResults"></div>
+    <p id="assessmentMessage"></p>
+  </div>
 </section>
 
 <!-- FEATURE 2: RESUME ANALYZER -->
 <section class="card" id="resume-analyzer">
-<h2>📄 Resume Analyzer</h2>
-<p>Upload your PDF resume to detect the skills listed in it.</p>
-
-<form id="resumeForm">
-<label for="resumeFile">Resume PDF (maximum 5 MB)</label>
-<input id="resumeFile" type="file" accept=".pdf,application/pdf" required>
-<button id="resumeButton" type="submit">Analyze My Resume</button>
-</form>
-
-<p id="resumeStatus" class="status" role="status"></p>
-
-<div id="resumeResults" class="result-box hidden">
-<h3>Detected Skills</h3>
-<p id="resumeSummary"></p>
-<div id="detectedSkills"></div>
-</div>
+  <h2>📄 Resume Analyzer</h2>
+  <p>Upload your PDF resume to detect the skills listed in it.</p>
+  <form id="resumeForm">
+    <label for="resumeFile">Resume PDF (maximum 5 MB)</label>
+    <input id="resumeFile" type="file" accept=".pdf,application/pdf" required>
+    <button id="resumeButton" type="submit">Analyze My Resume</button>
+  </form>
+  <p id="resumeStatus" class="status" role="status"></p>
+  <div id="resumeResults" class="result-box hidden">
+    <h3>Detected Skills</h3>
+    <p id="resumeSummary"></p>
+    <div id="detectedSkills"></div>
+  </div>
 </section>
 
 <!-- FEATURE 3: PLACEMENT ROADMAP -->
 <section class="card" id="placement-roadmap">
-<h2>🎯 Placement Readiness & Learning Roadmap</h2>
-<p>Compare your resume skills with the starter requirements for an entry-level AI/ML role.</p>
-<p>Analyze your resume first, then generate your roadmap.</p>
+  <h2>🎯 Placement Readiness &amp; Learning Roadmap</h2>
+  <p>Compare your resume skills with the starter requirements for an entry-level AI/ML role.</p>
+  <p>Analyze your resume first, then generate your roadmap.</p>
+  <button type="button" id="roadmapBtn" class="secondary-button">Generate My Learning Roadmap</button>
+  <p id="roadmapStatus" class="status" role="status"></p>
 
-<button type="button" id="roadmapBtn" class="secondary-button">
-Generate My Learning Roadmap
-</button>
-
-<p id="roadmapStatus" class="status" role="status"></p>
-
-<div id="roadmapResults" class="hidden">
-<div class="result-box">
-<h3>📈 Profile Match</h3>
-<p id="matchSummary"></p>
-<div class="progress-track">
-<div id="matchProgress" class="progress-fill"></div>
-</div>
-<p id="matchDescription"></p>
-</div>
-
-<div class="result-box">
-<h3>✅ Matched Skills</h3>
-<div id="matchedSkills"></div>
-</div>
-
-<div class="result-box">
-<h3>📌 Skills to Develop</h3>
-<div id="missingSkills"></div>
-</div>
-
-<div class="result-box">
-<h3>🗓️ Four-Week Learning Plan</h3>
-<div id="learningRoadmap"></div>
-</div>
-
-<p id="roadmapNote"></p>
-</div>
+  <div id="roadmapResults" class="hidden">
+    <div class="result-box">
+      <h3>📈 Profile Match</h3>
+      <p id="matchSummary"></p>
+      <div class="progress-track"><div id="matchProgress" class="progress-fill"></div></div>
+      <p id="matchDescription"></p>
+    </div>
+    <div class="result-box"><h3>✅ Matched Skills</h3><div id="matchedSkills"></div></div>
+    <div class="result-box"><h3>📌 Skills to Develop</h3><div id="missingSkills"></div></div>
+    <div class="result-box"><h3>🗓️ Four-Week Learning Plan</h3><div id="learningRoadmap"></div></div>
+    <p id="roadmapNote"></p>
+  </div>
 </section>
 
 <!-- FEATURE 4: AI MOCK INTERVIEW -->
 <section class="card" id="mock-interview">
-<h2>🤖 AI Mock Interview</h2>
-<p>Practise technical interviews with Gemini and receive personalized feedback.</p>
+  <h2>🤖 AI Mock Interview</h2>
+  <p>Practise technical interviews with Gemini and receive personalized feedback.</p>
 
-<form id="mockInterviewForm">
-<label for="interviewSkills">Choose your skills</label>
-<select id="interviewSkills" multiple required size="6">
-<option value="Python" selected>Python</option>
-<option value="SQL">SQL</option>
-<option value="Problem Solving">Problem Solving</option>
-<option value="Machine Learning">Machine Learning</option>
-<option value="Deep Learning">Deep Learning</option>
-<option value="Data Analysis">Data Analysis</option>
-<option value="Artificial Intelligence">Artificial Intelligence</option>
-<option value="Web Development">Web Development</option>
-<option value="Git">Git</option>
-</select>
-<small>Hold Ctrl on Windows to select multiple skills.</small>
+  <form id="mockInterviewForm">
+    <label for="interviewSkills">Choose your skills</label>
+    <select id="interviewSkills" multiple required size="6"></select>
+    <small>Hold Ctrl (Windows) or Cmd (Mac) to select multiple skills.</small>
 
-<div style="margin-top:18px">
-<label for="interviewDifficulty">Difficulty</label>
-<select id="interviewDifficulty">
-<option value="Beginner">Beginner</option>
-<option value="Intermediate">Intermediate</option>
-<option value="Advanced">Advanced</option>
-</select>
-</div>
+    <div style="margin-top:18px">
+      <label for="interviewDifficulty">Difficulty</label>
+      <select id="interviewDifficulty">
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Advanced</option>
+      </select>
+    </div>
 
-<div style="margin-top:18px">
-<label for="questionCount">Number of questions</label>
-<select id="questionCount">
-<option value="3">3 questions</option>
-<option value="5" selected>5 questions</option>
-<option value="10">10 questions</option>
-</select>
-</div>
+    <div style="margin-top:18px">
+      <label for="questionCount">Number of questions</label>
+      <select id="questionCount">
+        <option value="3">3 questions</option>
+        <option value="5" selected>5 questions</option>
+        <option value="10">10 questions</option>
+      </select>
+    </div>
 
-<button id="generateQuestionsBtn" type="submit">
-Generate Interview Questions
-</button>
-</form>
+    <button id="generateQuestionsBtn" type="submit">Generate Interview Questions</button>
+  </form>
 
-<p id="interviewStatus" class="status" role="status" aria-live="polite"></p>
-<div id="interviewQuestions" class="hidden"></div>
-
-<button type="button" id="generateInterviewReportBtn" class="secondary-button hidden">
-📊 Generate Interview Report
-</button>
-
-<div id="interviewReport" class="result-box hidden"></div>
+  <p id="interviewStatus" class="status" role="status" aria-live="polite"></p>
+  <div id="interviewQuestions" class="hidden"></div>
+  <button type="button" id="generateInterviewReportBtn" class="secondary-button hidden">📊 Generate Interview Report</button>
+  <div id="interviewReport" class="result-box hidden"></div>
 </section>
 
-<!-- FEATURE 5: LINKEDIN JOB RECOMMENDATIONS -->
+<!-- FEATURE 5: JOB RECOMMENDATIONS -->
 <section class="card" id="job-recommendations">
-<h2>💼 AI-Powered Job Recommendations</h2>
-<p>Find LinkedIn job searches based on the skills extracted from your resume.</p>
-<p>Target roles: AI/ML Engineer, Python Developer, and Data Analyst · Location: India</p>
-
-<button id="find-jobs-btn" type="button">Find Matching Jobs</button>
-<p id="job-status" class="status" role="status" aria-live="polite"></p>
-<div id="job-results"></div>
+  <h2>💼 AI-Powered Job Recommendations</h2>
+  <p>Find LinkedIn job searches based on the skills extracted from your resume.</p>
+  <p>Target roles: AI/ML Engineer, Python Developer, and Data Analyst · Location: India</p>
+  <button id="find-jobs-btn" type="button">Find Matching Jobs</button>
+  <p id="job-status" class="status" role="status" aria-live="polite"></p>
+  <div id="job-results"></div>
 </section>
 
 </main>
 
-<footer>
-<p>PlaceAI — Learn, Improve, and Prepare for Your Dream Job.</p>
-</footer>
+<footer><p>PlaceAI — Learn, Improve, and Prepare for Your Dream Job.</p></footer>
 
 <script>
-const API_URL = "http://127.0.0.1:8000";
-window.placeAIResumeSkills = [];
+"use strict";
 
-async function apiRequest(endpoint, options) {
-const response = await fetch(`${API_URL}${endpoint}`, options);
-let data;
+/* ---------- Config ---------- */
+const API_URL = window.PLACEAI_API_URL || "http://127.0.0.1:8000";
+const REQUEST_TIMEOUT_MS = 60000;
 
-try {
-data = await response.json();
-} catch {
-throw new Error("The server returned an unreadable response.");
+const ASSESSED_SKILLS = [
+  { key: "python",          label: "Python",          target: 80 },
+  { key: "sql",             label: "SQL",             target: 70 },
+  { key: "problem_solving", label: "Problem Solving", target: 75 },
+  { key: "git",             label: "Git",             target: 60 }
+];
+const INTERVIEW_SKILLS = [
+  "Python", "SQL", "Problem Solving", "Machine Learning", "Deep Learning",
+  "Data Analysis", "Artificial Intelligence", "Web Development", "Git"
+];
+
+let resumeSkills = [];
+
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+
+/** Tiny DOM builder: el("div", {className:"x", text:"hi"}, child1, child2) */
+function el(tag, props = {}, ...children) {
+  const node = document.createElement(tag);
+  const { text, ...rest } = props;
+  Object.assign(node, rest);
+  if (text !== undefined) node.textContent = text;
+  node.append(...children.filter(Boolean));
+  return node;
 }
 
-if (!response.ok) {
-const detail = Array.isArray(data.detail)
-? data.detail.map(item => item.msg).join(", ")
-: data.detail;
-throw new Error(detail || "The request failed.");
+const show = (node, visible = true) => node.classList.toggle("hidden", !visible);
+
+function setStatus(node, message, type = "") {
+  node.textContent = message;
+  node.className = "status" + (type ? " " + type : "");
 }
 
-return data;
+async function apiRequest(endpoint, options = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(API_URL + endpoint, { ...options, signal: controller.signal });
+    let data;
+    try { data = await response.json(); }
+    catch { throw new Error("The server returned an unreadable response."); }
+
+    if (!response.ok) {
+      const detail = Array.isArray(data.detail)
+        ? data.detail.map(item => item.msg).join(", ")
+        : data.detail;
+      throw new Error(detail || "The request failed.");
+    }
+    return data;
+  } catch (error) {
+    if (error.name === "AbortError") throw new Error("The request timed out. Please try again.");
+    if (error instanceof TypeError) throw new Error("Cannot reach the server. Is the backend running?");
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
-function setStatus(element, message, type = "") {
-element.textContent = message;
-element.className = "status";
-if (type) element.classList.add(type);
+const postJSON = (endpoint, body) =>
+  apiRequest(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+/** Runs an async action while disabling a button; handles errors via onError. */
+async function withButton(button, busyText, action, onError) {
+  const original = button.textContent;
+  button.disabled = true;
+  if (busyText) button.textContent = busyText;
+  try { await action(); }
+  catch (error) { onError(error); }
+  finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
 }
 
 function addSkillChips(container, skills, emptyMessage) {
-container.replaceChildren();
-
-if (!skills || skills.length === 0) {
-container.textContent = emptyMessage;
-return;
+  container.replaceChildren();
+  if (!skills?.length) { container.textContent = emptyMessage; return; }
+  container.append(...skills.map(skill => el("span", { className: "skill-chip", text: skill })));
 }
 
-skills.forEach(skill => {
-const chip = document.createElement("span");
-chip.className = "skill-chip";
-chip.textContent = skill;
-container.appendChild(chip);
-});
+function progressBar(label, value) {
+  const fill = el("div", { className: "progress-fill" });
+  fill.style.width = value + "%";
+  const track = el("div", { className: "progress-track", role: "progressbar" }, fill);
+  track.setAttribute("aria-label", label);
+  track.setAttribute("aria-valuemin", "0");
+  track.setAttribute("aria-valuemax", "100");
+  track.setAttribute("aria-valuenow", String(value));
+  return track;
 }
 
-// FEATURE 1: SKILL ASSESSMENT
-["python", "sql", "problem_solving", "git"].forEach(skill => {
-document.getElementById(skill).addEventListener("input", event => {
-document.getElementById(skill + "Value").textContent = event.target.value;
-});
-});
+/* ---------- Build static form controls from config ---------- */
+$("skillSliders").append(...ASSESSED_SKILLS.map(({ key, label }) => {
+  const value = el("span", { id: key + "Value", text: "50" });
+  const input = el("input", { id: key, type: "range", min: 0, max: 100, value: 50 });
+  input.addEventListener("input", () => { value.textContent = input.value; });
+  return el("div", { className: "skill-control" },
+    el("div", { className: "skill-label" }, el("label", { htmlFor: key, text: label }), value),
+    input);
+}));
 
-document.getElementById("skillForm").addEventListener("submit", async event => {
-event.preventDefault();
+$("interviewSkills").append(...INTERVIEW_SKILLS.map(skill =>
+  el("option", { value: skill, text: skill, selected: skill === "Python" })));
 
-const status = document.getElementById("assessmentStatus");
-const results = document.getElementById("assessmentResults");
-const output = document.getElementById("assessmentSkillResults");
+/* ---------- Dashboard ---------- */
+function updatePlacementDashboard(scores) {
+  const entries = ASSESSED_SKILLS.map(skill => {
+    const score = Number(scores[skill.key]) || 0;
+    return { ...skill, score, gap: Math.max(0, skill.target - score) };
+  });
 
-results.classList.add("hidden");
-setStatus(status, "Analyzing your skills...");
+  const average = Math.round(entries.reduce((sum, s) => sum + s.score, 0) / entries.length);
+  const biggest = entries.reduce((a, b) => (b.gap > a.gap ? b : a));
 
-const scores = {
-python: Number(document.getElementById("python").value),
-sql: Number(document.getElementById("sql").value),
-problem_solving: Number(document.getElementById("problem_solving").value),
-git: Number(document.getElementById("git").value)
-};
+  $("readinessScore").textContent = average + "%";
+  $("skillsAssessed").textContent = `${entries.length}/${ASSESSED_SKILLS.length}`;
+  $("topSkillGap").textContent = biggest.gap > 0 ? biggest.label : "None";
+  $("topSkillGapDetail").textContent = biggest.gap > 0
+    ? `${biggest.gap} points below the starter target of ${biggest.target}`
+    : "All four skills meet their starter targets.";
 
-try {
-const data = await apiRequest("/analyze", {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify(scores)
-});
-
-output.replaceChildren();
-
-document.getElementById("assessmentAverage").textContent =
-"Average score: " + (data.average_score ?? data.average ?? "See details below");
-
-const report = data.skill_results || data.results || data.skills || {};
-const items = Array.isArray(report)
-? report.map(item => [item.skill || item.name || "Skill", item])
-: Object.entries(report);
-
-items.forEach(([name, item]) => {
-const p = document.createElement("p");
-
-if (item && typeof item === "object") {
-const parts = [name];
-if (item.score !== undefined) parts.push("Score: " + item.score);
-if (item.gap !== undefined) parts.push("Gap: " + item.gap);
-if (item.priority) parts.push("Priority: " + item.priority);
-if (item.recommendation) parts.push(item.recommendation);
-p.textContent = parts.join(" | ");
-} else {
-p.textContent = `${name}: ${item}`;
+  $("dashboardSkillProgress").replaceChildren(...entries.map(skill =>
+    el("div", { className: "dashboard-skill" },
+      el("div", { className: "dashboard-skill-head" },
+        el("strong", { text: skill.label }),
+        el("span", { text: skill.score + "/100" })),
+      progressBar(skill.label + " score", skill.score))));
 }
 
-output.appendChild(p);
+/* ---------- Feature 1: Skill assessment ---------- */
+$("skillForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const status = $("assessmentStatus");
+  show($("assessmentResults"), false);
+  setStatus(status, "Analyzing your skills...");
+
+  const scores = Object.fromEntries(ASSESSED_SKILLS.map(({ key }) => [key, Number($(key).value)]));
+
+  try {
+    const data = await postJSON("/analyze", scores);
+
+    $("assessmentAverage").textContent =
+      "Average score: " + (data.average_score ?? data.average ?? "See details below");
+
+    const report = data.skill_results || data.results || data.skills || {};
+    const items = Array.isArray(report)
+      ? report.map(item => [item.skill || item.name || "Skill", item])
+      : Object.entries(report);
+
+    $("assessmentSkillResults").replaceChildren(...items.map(([name, item]) => {
+      if (!item || typeof item !== "object") return el("p", { text: `${name}: ${item}` });
+      const parts = [name];
+      if (item.score !== undefined) parts.push("Score: " + item.score);
+      if (item.gap !== undefined) parts.push("Gap: " + item.gap);
+      if (item.priority) parts.push("Priority: " + item.priority);
+      if (item.recommendation) parts.push(item.recommendation);
+      return el("p", { text: parts.join(" | ") });
+    }));
+
+    updatePlacementDashboard(scores);
+    $("assessmentMessage").textContent = data.message || "Assessment completed.";
+    show($("assessmentResults"));
+    setStatus(status, "Assessment completed!", "success");
+  } catch (error) {
+    setStatus(status, "Error: " + error.message, "error");
+  }
 });
 
-document.getElementById("assessmentMessage").textContent =
-data.message || "Assessment completed.";
+/* ---------- Feature 2: Resume analyzer ---------- */
+const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 
-results.classList.remove("hidden");
-setStatus(status, "Assessment completed!", "success");
-} catch (error) {
-setStatus(status, "Error: " + error.message, "error");
-}
+$("resumeForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const file = $("resumeFile").files[0];
+  const status = $("resumeStatus");
+  show($("resumeResults"), false);
+
+  if (!file) return setStatus(status, "Please select a PDF resume.", "error");
+  if (!file.name.toLowerCase().endsWith(".pdf")) return setStatus(status, "Please upload a PDF file.", "error");
+  if (file.size > MAX_RESUME_BYTES) return setStatus(status, "The file must be smaller than 5 MB.", "error");
+
+  const formData = new FormData();
+  formData.append("file", file);
+  setStatus(status, "Extracting skills from your resume...");
+
+  await withButton($("resumeButton"), "Analyzing...", async () => {
+    const data = await apiRequest("/resume", { method: "POST", body: formData });
+    const skills = Array.isArray(data.detected_skills) ? data.detected_skills : [];
+    resumeSkills = skills;
+
+    $("resumeSummary").textContent =
+      `File: ${data.filename || file.name} | Pages: ${data.pages ?? "N/A"} | ` +
+      `Skill categories found: ${data.total_skills_found ?? skills.length}`;
+    addSkillChips($("detectedSkills"), skills, "No recognized skills found in this PDF.");
+    show($("resumeResults"));
+    show($("roadmapResults"), false);
+    setStatus(status, data.message || "Resume analyzed successfully!", "success");
+  }, error => {
+    resumeSkills = [];
+    setStatus(status, "Error: " + error.message, "error");
+  });
 });
 
-// FEATURE 2: RESUME ANALYZER
-document.getElementById("resumeForm").addEventListener("submit", async event => {
-event.preventDefault();
+/* ---------- Feature 3: Roadmap ---------- */
+$("roadmapBtn").addEventListener("click", async () => {
+  const status = $("roadmapStatus");
+  show($("roadmapResults"), false);
+  if (!resumeSkills.length) return setStatus(status, "Please analyze your resume first.", "error");
 
-const file = document.getElementById("resumeFile").files[0];
-const status = document.getElementById("resumeStatus");
-const results = document.getElementById("resumeResults");
-const button = document.getElementById("resumeButton");
+  setStatus(status, "Generating your learning roadmap...");
 
-results.classList.add("hidden");
+  await withButton($("roadmapBtn"), null, async () => {
+    const report = await postJSON("/placement-roadmap", { detected_skills: resumeSkills });
+    const matched = report.matched_skills || [];
+    const missing = report.missing_skills || [];
+    const percentage = Math.max(0, Math.min(100, Number(report.match_percentage) || 0));
 
-if (!file) {
-setStatus(status, "Please select a PDF resume.", "error");
-return;
-}
+    $("matchSummary").textContent = percentage + "% profile match";
+    $("matchProgress").style.width = percentage + "%";
+    $("matchDescription").textContent =
+      `${report.total_matched_skills ?? matched.length} of ` +
+      `${report.total_required_skills ?? "the required"} required skills matched.`;
 
-if (!file.name.toLowerCase().endsWith(".pdf")) {
-setStatus(status, "Please upload a PDF file.", "error");
-return;
-}
+    addSkillChips($("matchedSkills"), matched, "No matching skills detected yet.");
 
-if (file.size > 5 * 1024 * 1024) {
-setStatus(status, "The file must be smaller than 5 MB.", "error");
-return;
-}
+    const missingBox = $("missingSkills");
+    missingBox.replaceChildren();
+    if (!missing.length) {
+      missingBox.textContent = "All required skill categories matched.";
+    } else {
+      missingBox.append(el("ul", {}, ...missing.map(item => {
+        const priority = (item.priority || "MEDIUM").toUpperCase();
+        return el("li", {},
+          `${item.skill} — `,
+          el("span", { className: "priority-" + priority, text: priority + " priority" }));
+      })));
+    }
 
-const formData = new FormData();
-formData.append("file", file);
+    $("learningRoadmap").replaceChildren(...(report.learning_roadmap || []).map(week =>
+      el("div", { className: "roadmap-week" },
+        el("h4", { text: `Week ${week.week}: ${week.focus_skill}` }),
+        el("p", { text: "Goal: " + week.goal }),
+        el("ul", {}, ...(week.topics || []).map(topic => el("li", { text: topic }))))));
 
-button.disabled = true;
-button.textContent = "Analyzing...";
-setStatus(status, "Extracting skills from your resume...");
-
-try {
-const data = await apiRequest("/resume", {
-method: "POST",
-body: formData
+    $("roadmapNote").textContent = report.note || "";
+    show($("roadmapResults"));
+    setStatus(status, "Your roadmap is ready!", "success");
+  }, error => setStatus(status, "Error: " + error.message, "error"));
 });
 
-const skills = Array.isArray(data.detected_skills) ? data.detected_skills : [];
-window.placeAIResumeSkills = skills;
-
-document.getElementById("resumeSummary").textContent =
-`File: ${data.filename || file.name} | ` +
-`Pages: ${data.pages ?? "N/A"} | ` +
-`Skill categories found: ${data.total_skills_found ?? skills.length}`;
-
-addSkillChips(
-document.getElementById("detectedSkills"),
-skills,
-"No recognized skills found in this PDF."
-);
-
-results.classList.remove("hidden");
-document.getElementById("roadmapResults").classList.add("hidden");
-setStatus(status, data.message || "Resume analyzed successfully!", "success");
-} catch (error) {
-window.placeAIResumeSkills = [];
-setStatus(status, "Error: " + error.message, "error");
-} finally {
-button.disabled = false;
-button.textContent = "Analyze My Resume";
-}
-});
-
-// FEATURE 3: PLACEMENT ROADMAP
-document.getElementById("roadmapBtn").addEventListener("click", async () => {
-const status = document.getElementById("roadmapStatus");
-const results = document.getElementById("roadmapResults");
-const button = document.getElementById("roadmapBtn");
-const skills = window.placeAIResumeSkills;
-
-results.classList.add("hidden");
-
-if (!skills.length) {
-setStatus(status, "Please analyze your resume first.", "error");
-return;
-}
-
-button.disabled = true;
-setStatus(status, "Generating your learning roadmap...");
-
-try {
-const report = await apiRequest("/placement-roadmap", {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify({detected_skills: skills})
-});
-
-const percentage = Math.max(0, Math.min(100, Number(report.match_percentage) || 0));
-
-document.getElementById("matchSummary").textContent = percentage + "% profile match";
-document.getElementById("matchProgress").style.width = percentage + "%";
-
-document.getElementById("matchDescription").textContent =
-`${report.total_matched_skills ?? (report.matched_skills || []).length} of ` +
-`${report.total_required_skills ?? "the required"} required skills matched.`;
-
-addSkillChips(
-document.getElementById("matchedSkills"),
-report.matched_skills || [],
-"No matching skills detected yet."
-);
-
-const missing = document.getElementById("missingSkills");
-missing.replaceChildren();
-
-if (!(report.missing_skills || []).length) {
-missing.textContent = "All required skill categories matched.";
-} else {
-const list = document.createElement("ul");
-
-report.missing_skills.forEach(item => {
-const li = document.createElement("li");
-const priority = document.createElement("span");
-priority.className = "priority-" + item.priority;
-priority.textContent = (item.priority || "MEDIUM") + " priority";
-li.append(document.createTextNode(item.skill + " — "), priority);
-list.appendChild(li);
-});
-
-missing.appendChild(list);
-}
-
-const roadmap = document.getElementById("learningRoadmap");
-roadmap.replaceChildren();
-
-(report.learning_roadmap || []).forEach(week => {
-const card = document.createElement("div");
-card.className = "roadmap-week";
-
-const heading = document.createElement("h4");
-heading.textContent = `Week ${week.week}: ${week.focus_skill}`;
-
-const goal = document.createElement("p");
-goal.textContent = "Goal: " + week.goal;
-
-const topics = document.createElement("ul");
-(week.topics || []).forEach(topic => {
-const li = document.createElement("li");
-li.textContent = topic;
-topics.appendChild(li);
-});
-
-card.append(heading, goal, topics);
-roadmap.appendChild(card);
-});
-
-document.getElementById("roadmapNote").textContent = report.note || "";
-results.classList.remove("hidden");
-setStatus(status, "Your roadmap is ready!", "success");
-} catch (error) {
-setStatus(status, "Error: " + error.message, "error");
-} finally {
-button.disabled = false;
-}
-});
-
-// FEATURE 4: GEMINI AI MOCK INTERVIEW
+/* ---------- Feature 4: Mock interview ---------- */
 let interviewRunId = 0;
-let interviewEvaluations = [];
-let currentInterviewQuestions = [];
-let currentInterviewSkills = [];
-
-document.getElementById("mockInterviewForm").addEventListener(
-"submit", async event => {
-event.preventDefault();
-
-const skills = Array.from(
-document.getElementById("interviewSkills").selectedOptions
-).map(option => option.value);
-
-const difficulty = document.getElementById("interviewDifficulty").value;
-const count = Number(document.getElementById("questionCount").value);
-const status = document.getElementById("interviewStatus");
-const container = document.getElementById("interviewQuestions");
-const button = document.getElementById("generateQuestionsBtn");
-const reportButton = document.getElementById("generateInterviewReportBtn");
-
-if (!skills.length) {
-setStatus(status, "Select at least one skill.", "error");
-return;
-}
-
-const thisRun = ++interviewRunId;
-interviewEvaluations = [];
-currentInterviewQuestions = [];
-currentInterviewSkills = skills;
-
-container.replaceChildren();
-container.classList.add("hidden");
-reportButton.classList.add("hidden");
-document.getElementById("interviewReport").classList.add("hidden");
-
-button.disabled = true;
-setStatus(status, "Gemini is generating your questions...");
-
-try {
-const data = await apiRequest("/mock-interview/questions", {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify({skills, difficulty, count})
-});
-
-if (thisRun !== interviewRunId) return;
-
-const questions = parseQuestions(data.questions);
-
-if (!questions.length) {
-throw new Error("No questions returned. Please try again.");
-}
-
-currentInterviewQuestions = questions;
-renderQuestions(questions, skills, container);
-container.classList.remove("hidden");
-
-setStatus(
-status,
-`${questions.length} questions generated. Start answering!`,
-"success"
-);
-} catch (error) {
-if (thisRun === interviewRunId) {
-setStatus(status, "Error: " + error.message, "error");
-}
-} finally {
-if (thisRun === interviewRunId) {
-button.disabled = false;
-}
-}
-}
-);
+let interviewEvaluations = [];   // indexed by question number (sparse)
+let currentQuestions = [];
 
 function parseQuestions(raw) {
-if (Array.isArray(raw)) {
-return raw.map(item => {
-if (typeof item === "string") return item.trim();
-return String(item?.question || item?.text || "").trim();
-}).filter(Boolean);
+  if (Array.isArray(raw)) {
+    return raw
+      .map(item => (typeof item === "string" ? item : item?.question || item?.text || "").trim())
+      .filter(Boolean);
+  }
+  if (typeof raw !== "string") return [];
+  return raw.split("\n")
+    .map(line => line.trim()
+      .replace(/^[-*•]+\s*/, "")
+      .replace(/^\d+[.)-]\s*/, "")
+      .trim())
+    .filter(line => line && !/^questions:?$/i.test(line));
 }
 
-if (typeof raw !== "string") return [];
+$("mockInterviewForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-return raw.split("\n")
-.map(line => line.trim())
-.filter(Boolean)
-.filter(line => !/^questions:?$/i.test(line))
-.map(line => line.replace(/^[-*•]+\s*/, ""))
-.map(line => line.replace(/^\d+[.)-]\s*/, "").trim())
-.filter(Boolean);
-}
+  const skills = [...$("interviewSkills").selectedOptions].map(o => o.value);
+  const difficulty = $("interviewDifficulty").value;
+  const count = Number($("questionCount").value);
+  const status = $("interviewStatus");
+  const container = $("interviewQuestions");
+  const reportButton = $("generateInterviewReportBtn");
 
-function renderQuestions(questions, skills, container) {
-container.replaceChildren();
+  if (!skills.length) return setStatus(status, "Select at least one skill.", "error");
 
-questions.forEach((question, index) => {
-const card = document.createElement("div");
-card.className = "roadmap-week";
+  const run = ++interviewRunId;
+  interviewEvaluations = [];
+  currentQuestions = [];
+  container.replaceChildren();
+  [container, reportButton, $("interviewReport")].forEach(n => show(n, false));
+  setStatus(status, "Gemini is generating your questions...");
 
-const number = document.createElement("div");
-number.className = "question-number";
-number.textContent = `QUESTION ${index + 1}`;
+  const button = $("generateQuestionsBtn");
+  button.disabled = true;
+  try {
+    const data = await postJSON("/mock-interview/questions", { skills, difficulty, count });
+    if (run !== interviewRunId) return;
 
-const questionText = document.createElement("h3");
-questionText.textContent = question;
+    const questions = parseQuestions(data.questions);
+    if (!questions.length) throw new Error("No questions returned. Please try again.");
 
-const skillInfo = document.createElement("p");
-skillInfo.textContent = "Skills: " + skills.join(", ");
-
-const answerLabel = document.createElement("label");
-answerLabel.htmlFor = `answer-${index}`;
-answerLabel.textContent = "Your answer";
-
-const answer = document.createElement("textarea");
-answer.id = `answer-${index}`;
-answer.rows = 5;
-answer.maxLength = 5000;
-answer.placeholder = "Write your answer here...";
-
-const evaluateButton = document.createElement("button");
-evaluateButton.type = "button";
-evaluateButton.textContent = "Evaluate My Answer";
-
-const feedback = document.createElement("div");
-feedback.className = "result-box hidden";
-feedback.setAttribute("aria-live", "polite");
-
-evaluateButton.addEventListener("click", async () => {
-const answerText = answer.value.trim();
-
-if (!answerText) {
-feedback.classList.remove("hidden");
-feedback.textContent = "Please write your answer first.";
-return;
-}
-
-evaluateButton.disabled = true;
-evaluateButton.textContent = "Evaluating...";
-feedback.classList.remove("hidden");
-feedback.textContent = "Gemini is reviewing your answer...";
-
-try {
-const data = await apiRequest("/mock-interview/evaluate", {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify({
-skill: skills.join(", "),
-question,
-answer: answerText
-})
+    currentQuestions = questions;
+    renderQuestions(questions, skills, container, run);
+    show(container);
+    setStatus(status, `${questions.length} questions generated. Start answering!`, "success");
+  } catch (error) {
+    if (run === interviewRunId) setStatus(status, "Error: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
 });
 
-const feedbackString = String(data.feedback || "");
-const scoreMatch = feedbackString.match(/Score\s*:\s*(\d+(?:\.\d+)?)\s*\/\s*10/i);
+function renderQuestions(questions, skills, container, run) {
+  const skillLabel = skills.join(", ");
 
-interviewEvaluations[index] = {
-question,
-skill: skills.join(", "),
-answer: answerText,
-feedback: feedbackString,
-score: scoreMatch ? Number(scoreMatch[1]) : null
-};
+  container.replaceChildren(...questions.map((question, index) => {
+    const answer = el("textarea", {
+      id: `answer-${index}`, rows: 5, maxLength: 5000, placeholder: "Write your answer here..."
+    });
+    const feedback = el("div", { className: "result-box hidden" });
+    feedback.setAttribute("aria-live", "polite");
+    const evaluateButton = el("button", { type: "button", text: "Evaluate My Answer" });
 
-feedback.replaceChildren();
+    evaluateButton.addEventListener("click", async () => {
+      const answerText = answer.value.trim();
+      show(feedback);
+      if (!answerText) { feedback.textContent = "Please write your answer first."; return; }
+      feedback.textContent = "Gemini is reviewing your answer...";
 
-const heading = document.createElement("h4");
-heading.textContent = "📝 AI Feedback";
+      await withButton(evaluateButton, "Evaluating...", async () => {
+        const data = await postJSON("/mock-interview/evaluate", {
+          skill: skillLabel, question, answer: answerText
+        });
+        if (run !== interviewRunId) return;   // a new interview was started meanwhile
 
-const feedbackText = document.createElement("p");
-feedbackText.className = "feedback-text";
-feedbackText.textContent = feedbackString || "No feedback returned.";
+        const text = String(data.feedback || "");
+        const match = text.match(/Score\s*:\s*(\d+(?:\.\d+)?)\s*\/\s*10/i);
+        interviewEvaluations[index] = {
+          number: index + 1,
+          question,
+          answer: answerText,
+          feedback: text,
+          score: match ? Number(match[1]) : null
+        };
 
-feedback.append(heading, feedbackText);
+        feedback.replaceChildren(
+          el("h4", { text: "📝 AI Feedback" }),
+          el("p", { className: "feedback-text", text: text || "No feedback returned." }));
 
-const evaluatedCount = interviewEvaluations.filter(Boolean).length;
-const reportButton = document.getElementById("generateInterviewReportBtn");
+        const reportButton = $("generateInterviewReportBtn");
+        reportButton.textContent =
+          `📊 Generate Interview Report (${interviewEvaluations.filter(Boolean).length}/${questions.length})`;
+        show(reportButton);
+      }, error => { feedback.textContent = "Error: " + error.message; });
+    });
 
-reportButton.textContent =
-`📊 Generate Interview Report (${evaluatedCount}/${questions.length})`;
-reportButton.classList.remove("hidden");
-} catch (error) {
-feedback.textContent = "Error: " + error.message;
-} finally {
-evaluateButton.disabled = false;
-evaluateButton.textContent = "Evaluate My Answer";
+    return el("div", { className: "roadmap-week" },
+      el("div", { className: "question-number", text: `QUESTION ${index + 1}` }),
+      el("h3", { text: question }),
+      el("p", { text: "Skills: " + skillLabel }),
+      el("label", { htmlFor: answer.id, text: "Your answer" }),
+      answer, evaluateButton, feedback);
+  }));
 }
+
+$("generateInterviewReportBtn").addEventListener("click", () => {
+  const report = $("interviewReport");
+  const evaluations = interviewEvaluations.filter(Boolean);
+  const total = currentQuestions.length;
+
+  report.replaceChildren();
+  show(report);
+
+  if (!evaluations.length) {
+    report.textContent = "Evaluate at least one answer before generating your report.";
+    return;
+  }
+
+  const scores = evaluations.map(e => e.score).filter(s => s !== null && s >= 0 && s <= 10);
+  const average = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+
+  const stat = (label, value) =>
+    el("div", { className: "report-stat" }, el("strong", { text: label }), el("p", { text: value }));
+
+  const summaryText = average === null ? null
+    : average >= 8 ? "Strong practice performance. Keep refining your explanations and practising follow-up questions."
+    : average >= 6 ? "Good starting point. Review the feedback below and strengthen the concepts you missed."
+    : "Use this as a learning baseline. Review the suggested answers, study the fundamentals, and try another mock interview.";
+
+  const nextSteps = [
+    "Review the areas to improve in each answer.",
+    "Practise explaining technical concepts in your own words.",
+    "Try another interview after reviewing the suggested answers."
+  ];
+  if (evaluations.length < total) nextSteps.push("Evaluate the remaining answers to complete your report.");
+
+  report.append(
+    el("h2", { text: "📋 Mock Interview Performance Report" }),
+    el("div", { className: "report-grid" },
+      stat("Questions evaluated", `${evaluations.length} / ${total}`),
+      stat("Numerically scored", `${scores.length} / ${evaluations.length}`),
+      stat("Overall score", average === null ? "Unavailable" : `${Math.round(average * 10)} / 100`),
+      stat("Average answer score", average === null ? "Unavailable" : `${average.toFixed(1)} / 10`)),
+    el("p", { text: "Scores are AI-generated practice estimates, not an official hiring assessment." }),
+    summaryText && el("h3", { text: "Performance Summary" }),
+    summaryText && el("p", { text: summaryText }),
+    el("h3", { text: "Detailed Question-by-Question Feedback" }),
+    ...evaluations.map(item =>
+      el("div", { className: "roadmap-week" },
+        el("h4", { text: `Question ${item.number}` }),
+        el("p", { text: item.question }),
+        el("p", { text: item.score === null ? "Score: Not detected in AI feedback" : `Score: ${item.score} / 10` }),
+        el("strong", { text: "Your answer" }),
+        el("p", { className: "feedback-text", text: item.answer }),
+        el("strong", { text: "AI evaluation" }),
+        el("p", { className: "feedback-text", text: item.feedback }))),
+    el("h3", { text: "Your Next Steps" }),
+    el("ul", {}, ...nextSteps.map(text => el("li", { text }))));
+
+  const printButton = el("button", {
+    type: "button", className: "secondary-button", text: "🖨️ Print / Save Report as PDF"
+  });
+  printButton.addEventListener("click", () => window.print());
+  report.append(printButton);
+
+  report.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-card.append(
-number, questionText, skillInfo,
-answerLabel, answer, evaluateButton, feedback
-);
-
-container.appendChild(card);
-});
+/* ---------- Feature 5: Job recommendations ---------- */
+function safeLinkedInUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" && /(^|\.)linkedin\.com$/.test(parsed.hostname) ? parsed.href : null;
+  } catch { return null; }
 }
 
-// GENERATE THE FINAL MOCK INTERVIEW REPORT
-document.getElementById("generateInterviewReportBtn").addEventListener(
-"click", () => {
-const report = document.getElementById("interviewReport");
-const evaluations = interviewEvaluations.filter(Boolean);
-const totalQuestions = currentInterviewQuestions.length;
+$("find-jobs-btn").addEventListener("click", async () => {
+  const status = $("job-status");
+  const results = $("job-results");
+  results.replaceChildren();
 
-report.replaceChildren();
-report.classList.remove("hidden");
+  if (!resumeSkills.length) return setStatus(status, "Please upload and analyze your resume first.", "error");
+  setStatus(status, "Generating LinkedIn job searches...");
 
-if (!evaluations.length) {
-report.textContent = "Evaluate at least one answer before generating your report.";
-return;
-}
+  await withButton($("find-jobs-btn"), null, async () => {
+    const data = await postJSON("/job-matches", { skills: resumeSkills, location: "India" });
+    const jobs = Array.isArray(data.jobs) ? data.jobs : [];
+    if (!jobs.length) return setStatus(status, "No job searches were returned.", "error");
 
-const title = document.createElement("h2");
-title.textContent = "📋 Mock Interview Performance Report";
-report.appendChild(title);
+    results.append(...jobs.map(job => {
+      const url = safeLinkedInUrl(job.search_url);
+      return el("article", { className: "job-card" },
+        el("h3", { text: job.title || "Job search" }),
+        el("p", { text: "Location: " + (job.location || "India") }),
+        el("p", { text: job.message || "Open LinkedIn to explore current listings." }),
+        url && el("a", {
+          href: url, target: "_blank", rel: "noopener noreferrer", text: "Explore jobs on LinkedIn"
+        }));
+    }));
 
-const evaluatedScores = evaluations
-.map(item => item.score)
-.filter(score => score !== null && score >= 0 && score <= 10);
-
-const scoredCount = evaluatedScores.length;
-const average = scoredCount
-? evaluatedScores.reduce((sum, score) => sum + score, 0) / scoredCount
-: null;
-
-const stats = document.createElement("div");
-stats.className = "report-grid";
-
-function addStat(label, value) {
-const box = document.createElement("div");
-box.className = "report-stat";
-
-const heading = document.createElement("strong");
-heading.textContent = label;
-
-const valueText = document.createElement("p");
-valueText.textContent = value;
-
-box.append(heading, valueText);
-stats.appendChild(box);
-}
-
-addStat("Questions evaluated", `${evaluations.length} / ${totalQuestions}`);
-addStat("Numerically scored", `${scoredCount} / ${evaluations.length}`);
-addStat(
-"Overall score",
-average === null ? "Unavailable" : `${Math.round(average * 10)} / 100`
-);
-addStat(
-"Average answer score",
-average === null ? "Unavailable" : `${average.toFixed(1)} / 10`
-);
-
-report.appendChild(stats);
-
-const note = document.createElement("p");
-note.textContent =
-"Scores are AI-generated practice estimates, not an official hiring assessment.";
-report.appendChild(note);
-
-if (average !== null) {
-const heading = document.createElement("h3");
-heading.textContent = "Performance Summary";
-report.appendChild(heading);
-
-const summary = document.createElement("p");
-
-if (average >= 8) {
-summary.textContent =
-"Strong practice performance. Keep refining your explanations and practising follow-up questions.";
-} else if (average >= 6) {
-summary.textContent =
-"Good starting point. Review the feedback below and strengthen the concepts you missed.";
-} else {
-summary.textContent =
-"Use this as a learning baseline. Review the suggested answers, study the fundamentals, and try another mock interview.";
-}
-
-report.appendChild(summary);
-}
-
-const detailedHeading = document.createElement("h3");
-detailedHeading.textContent = "Detailed Question-by-Question Feedback";
-report.appendChild(detailedHeading);
-
-evaluations.forEach((item, index) => {
-const card = document.createElement("div");
-card.className = "roadmap-week";
-
-const heading = document.createElement("h4");
-heading.textContent = `Question ${index + 1}`;
-
-const question = document.createElement("p");
-question.textContent = item.question;
-
-const score = document.createElement("p");
-score.textContent = item.score === null
-? "Score: Not detected in AI feedback"
-: `Score: ${item.score} / 10`;
-
-const answerHeading = document.createElement("strong");
-answerHeading.textContent = "Your answer";
-
-const answer = document.createElement("p");
-answer.className = "feedback-text";
-answer.textContent = item.answer;
-
-const feedbackHeading = document.createElement("strong");
-feedbackHeading.textContent = "AI evaluation";
-
-const feedback = document.createElement("p");
-feedback.className = "feedback-text";
-feedback.textContent = item.feedback;
-
-card.append(
-heading, question, score,
-answerHeading, answer,
-feedbackHeading, feedback
-);
-
-report.appendChild(card);
-});
-
-const finalHeading = document.createElement("h3");
-finalHeading.textContent = "Your Next Steps";
-report.appendChild(finalHeading);
-
-const nextSteps = document.createElement("ul");
-
-[
-"Review the areas to improve in each answer.",
-"Practise explaining technical concepts in your own words.",
-"Try another interview after reviewing the suggested answers."
-].forEach(text => {
-const li = document.createElement("li");
-li.textContent = text;
-nextSteps.appendChild(li);
-});
-
-if (evaluations.length < totalQuestions) {
-const li = document.createElement("li");
-li.textContent = "Evaluate the remaining answers to complete your report.";
-nextSteps.appendChild(li);
-}
-
-report.appendChild(nextSteps);
-
-const printButton = document.createElement("button");
-printButton.type = "button";
-printButton.className = "secondary-button";
-printButton.textContent = "🖨️ Print / Save Report as PDF";
-
-printButton.addEventListener("click", () => {
-window.print();
-});
-
-report.appendChild(printButton);
-report.scrollIntoView({behavior: "smooth", block: "start"});
-}
-);
-
-// FEATURE 5: LINKEDIN JOB RECOMMENDATIONS
-document.getElementById("find-jobs-btn").addEventListener("click", async () => {
-const status = document.getElementById("job-status");
-const results = document.getElementById("job-results");
-const button = document.getElementById("find-jobs-btn");
-const skills = window.placeAIResumeSkills;
-
-results.replaceChildren();
-
-if (!Array.isArray(skills) || skills.length === 0) {
-setStatus(status, "Please upload and analyze your resume first.", "error");
-return;
-}
-
-button.disabled = true;
-setStatus(status, "Generating LinkedIn job searches...");
-
-try {
-const data = await apiRequest("/job-matches", {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify({skills, location: "India"})
-});
-
-if (!Array.isArray(data.jobs) || data.jobs.length === 0) {
-setStatus(status, "No job searches were returned.", "error");
-return;
-}
-
-data.jobs.forEach(job => {
-const card = document.createElement("article");
-card.className = "job-card";
-
-const title = document.createElement("h3");
-title.textContent = job.title || "Job search";
-
-const location = document.createElement("p");
-location.textContent = "Location: " + (job.location || "India");
-
-const description = document.createElement("p");
-description.textContent = job.message ||
-"Open LinkedIn to explore current listings.";
-
-const link = document.createElement("a");
-link.href = job.search_url;
-link.target = "_blank";
-link.rel = "noopener noreferrer";
-link.textContent = "Explore jobs on LinkedIn";
-
-card.append(title, location, description, link);
-results.appendChild(card);
-});
-
-setStatus(
-status,
-`Generated ${data.jobs.length} LinkedIn job searches. These are search links, not verified individual vacancies.`,
-"success"
-);
-} catch (error) {
-console.error("Job recommendation error:", error);
-setStatus(status, "Could not load job searches: " + error.message, "error");
-} finally {
-button.disabled = false;
-}
+    setStatus(status,
+      `Generated ${jobs.length} LinkedIn job searches. These are search links, not verified individual vacancies.`,
+      "success");
+  }, error => {
+    console.error("Job recommendation error:", error);
+    setStatus(status, "Could not load job searches: " + error.message, "error");
+  });
 });
 </script>
-
 </body>
 </html>

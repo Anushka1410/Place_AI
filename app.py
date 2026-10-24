@@ -8,6 +8,7 @@ from resume_analyzer import analyze_resume
 from placement_roadmap import analyze_placement_gap
 from typing import List
 from urllib.parse import urlencode
+from daily_tracker import initialize_database
 from mock_interview import (
     generate_interview_questions,
     evaluate_answer
@@ -15,10 +16,12 @@ from mock_interview import (
 
 
 app = FastAPI(
+    
     title="PlaceAI",
     description="Your AI-powered placement preparation assistant",
     version="1.0.0"
 )
+
 
 app.add_middleware(
     CORSMiddleware,
